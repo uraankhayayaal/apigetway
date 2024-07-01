@@ -11,7 +11,7 @@ use OpenApi\Attributes as OA;
 interface AuthControllerInterface
 {
     #[OA\Post(
-        path: '/api/login',
+        path: '/api/auth/login',
         description: 'Авторизация',
         summary: 'Получение JWT-токена для авторизованного пользователя',
         tags: ['Auth']
@@ -51,7 +51,7 @@ interface AuthControllerInterface
     public function login(Request $request);
 
     #[OA\Post(
-        path: '/api/register',
+        path: '/api/auth/register',
         description: 'Регистрация',
         summary: 'Добавление нового пользователя и получение JWT-токена',
         tags: ['Auth']
@@ -91,7 +91,7 @@ interface AuthControllerInterface
     public function register(Request $request);
 
     #[OA\Post(
-        path: "/api/logout",
+        path: "/api/auth/logout",
         description: "Выход из системы",
         summary: "Деактуализация JWT-токена",
         tags: ["Auth"],
@@ -104,7 +104,7 @@ interface AuthControllerInterface
     public function logout();
 
     #[OA\Post(
-        path: "/api/refresh",
+        path: "/api/auth/refresh",
         description: "Обновление токена",
         summary: "Перевыпуск нового JWT-токена",
         tags: ["Auth"],

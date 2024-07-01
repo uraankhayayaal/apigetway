@@ -11,14 +11,14 @@
         }
     ],
     "paths": {
-        "/api/login": {
+        "/api/auth/login": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Получение JWT-токена для авторизованного пользователя",
                 "description": "Авторизация",
-                "operationId": "c957a80a5ffbf2a4ebd29d0a4555da9c",
+                "operationId": "f530d2cdf49f9b2b3e77e760955e5f93",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -43,14 +43,14 @@
                 }
             }
         },
-        "/api/register": {
+        "/api/auth/register": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Добавление нового пользователя и получение JWT-токена",
                 "description": "Регистрация",
-                "operationId": "2641e1cb580da487c27e1239cfc0c048",
+                "operationId": "a0c04c39bd2e1a8ced0b0bc26bab2959",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -75,14 +75,14 @@
                 }
             }
         },
-        "/api/logout": {
+        "/api/auth/logout": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Деактуализация JWT-токена",
                 "description": "Выход из системы",
-                "operationId": "3d3348e40ee29b17bb55e66269ba2566",
+                "operationId": "4e7942f25033e766672c707c7eff031c",
                 "responses": {
                     "204": {
                         "description": "Успешный ответ"
@@ -95,14 +95,14 @@
                 ]
             }
         },
-        "/api/refresh": {
+        "/api/auth/refresh": {
             "post": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Перевыпуск нового JWT-токена",
                 "description": "Обновление токена",
-                "operationId": "6441caac650abd11612349ed54314ca1",
+                "operationId": "f7867d862cfb1812034ffac3ab696fc1",
                 "responses": {
                     "200": {
                         "description": "Успешный ответ",
