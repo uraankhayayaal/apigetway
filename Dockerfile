@@ -10,7 +10,7 @@ RUN composer install \
     --no-scripts \
     --prefer-dist
 
-FROM php:7.2-apache-stretch
+FROM bitnami/laravel:10.3.3
  
 COPY ./conf/php /usr/local/etc/php/conf.d
 COPY ./src /app
