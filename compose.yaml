@@ -7,31 +7,34 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./src:/app
-      - ./conf/php:/usr/local/etc/php/conf.d
+      - ./:/app
     networks:
       - 2child-back-auth-net
     environment:
       DB_HOST: db
       DB_PORT: 3306
-      DB_USERNAME: ${MYSQL_USERNAME}
-      DB_DATABASE: ${MYSQL_DATABASE}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_PASSWORD: ${DB_PASSWORD}
 
   db:
     image: mysql
     container_name: 2child-back-auth-db
     restart: always
     volumes:
-      - ./cache/db_data:/var/lib/mysql
+      - db-data:/var/lib/mysql
     networks:
       - 2child-back-auth-net
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USERNAME}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOTPASS}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
 
 networks:
   2child-back-auth-net:
     driver: 'bridge'
+
+volumes:
+  db-data:
+    external: true

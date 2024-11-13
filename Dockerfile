@@ -12,6 +12,6 @@ RUN composer install \
 
 FROM bitnami/laravel:10.3.3
  
-COPY ./conf/php /usr/local/etc/php/conf.d
+COPY ./conf/php/php.ini /usr/local/etc/php/conf.d/base.ini
 COPY ./src /app
 COPY --from=vendor /app/vendor/ /app/vendor/
