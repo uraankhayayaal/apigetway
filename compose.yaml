@@ -1,40 +1,29 @@
 services:
+  web:
+    image: nginx:1.27.2
+    container_name: 2child-api-getway-web
+    restart: always
+    ports:
+      - 8000:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./public/index.php:/app/public/index.php
+    networks:
+      - 2child-api-getway-net
 
   app:
-    image: bitnami/laravel:10.3.3
-    container_name: 2child-back-auth-app
-    restart: unless-stopped
-    ports:
-      - 8000:8000
-    volumes:
-      - ./:/app
-    networks:
-      - 2child-back-auth-net
-    environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_USERNAME: ${DB_USERNAME}
-      DB_DATABASE: ${DB_DATABASE}
-      DB_PASSWORD: ${DB_PASSWORD}
-
-  db:
-    image: mysql
-    container_name: 2child-back-auth-db
+    build:
+      context: ./
+      target: dev
+    container_name: 2child-api-getway-app
     restart: always
     volumes:
-      - db-data:/var/lib/mysql
-    networks:
-      - 2child-back-auth-net
+      - ./:/app
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOTPASS}
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      GITHUB_API_TOKEN: ${GITHUB_API_TOKEN}
+    networks:
+      - 2child-api-getway-net
 
 networks:
-  2child-back-auth-net:
+  2child-api-getway-net:
     driver: 'bridge'
-
-volumes:
-  db-data:
-    external: true
