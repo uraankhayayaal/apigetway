@@ -1,0 +1,10 @@
+{
+    "filewatcher.commands": [
+        {
+			"match": "(?=Users/ayaal/Documents/apps/2child-back-auth/app/*).*(?=\\.php)",
+			"isAsync": true,
+			"cmd": "file=${file} && cd ${workspaceRoot} && docker exec 2child-api-getway-app ./vendor/bin/php-cs-fixer fix ${file/Users\\/ayaal\\/Documents\\/apps\\/2child-back-auth/app} --allow-risky=yes --cache-file=./.php-cs-fixer.cache --quiet",
+			"event": "onFileChange"
+		}	
+    ]
+}
