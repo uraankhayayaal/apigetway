@@ -1,4 +1,4 @@
 CS FIX
 ```bash
-docker-composer exec app php ./vendor/bin/php-cs-fixer fix src
+docker-compose exec app php ./vendor/bin/php-cs-fixer fix app
 ```
