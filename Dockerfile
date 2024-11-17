@@ -24,7 +24,7 @@ RUN composer install
 
 FROM dev_deps as test
 COPY ./ /app
-RUN ./vendor/bin/php-cs-fixer fix app --dry-run --allow-risky=yes --show-progress=dots -vvv --diff --format=gitlab
+RUN ./vendor/bin/php-cs-fixer fix app --dry-run --allow-risky=yes --show-progress=dots -vvv --diff
 RUN ./vendor/bin/phpstan analyse app tests --debug -vvv
 RUN ./vendor/bin/phpunit
 RUN rm -rf ./vendor
