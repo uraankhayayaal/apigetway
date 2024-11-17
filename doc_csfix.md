@@ -2,7 +2,7 @@
 ## Install:
 1. Install 
     ```bash
-    docker-compose exec app composer require friendsofphp/php-cs-fixer
+    docker-compose exec app composer require --dev friendsofphp/php-cs-fixer
     ```
 1. Create cs file config:
     ```php
@@ -39,7 +39,7 @@
     ```
 ## Useage
 ```bash
-docker-compose exec app php ./vendor/bin/php-cs-fixer fix app --allow-risky=yes
+docker-compose exec app vendor/bin/php-cs-fixer fix app --allow-risky=yes
 ```
 ## On file change for VSCode:
 1. Install Name: [File Watcher](https://marketplace.visualstudio.com/items?itemName=appulate.filewatcher)
