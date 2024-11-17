@@ -1,0 +1,6 @@
+[init]
+	defaultBranch = none
+[fetch]
+	recurseSubmodules = false
+[http "https://gitlab.com"]
+	sslCAInfo = /Users/ayaal/Documents/apps/2child-back-auth/builds/9GyKPMDKw/0/it-yakutia/2child-back-auth.tmp/CI_SERVER_TLS_CA_FILE
