@@ -21,7 +21,14 @@ COPY ./composer.json /app/composer.json
 COPY ./composer.lock /app/composer.lock
 
 FROM compose as dev_deps
+RUN apk add --no-cache linux-headers \
+    && pecl install xdebug-3.3.2 \
+    && docker-php-ext-enable xdebug
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 RUN composer install
+
+FROM dev_deps as dev
+CMD php-fpm
 
 FROM dev_deps as test
 COPY ./ /app
@@ -35,5 +42,7 @@ FROM compose as prod_deps
 RUN composer install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --optimize-autoloader
 
 FROM build as prod
+RUN apk del --purge autoconf g++ make
 COPY --from=test ./app /app
 COPY --from=prod_deps /app/vendor /app/vendor
+CMD php-fpm

@@ -14,7 +14,7 @@ services:
   app:
     build:
       context: ./
-      target: dev_deps
+      target: dev
     container_name: 2child-api-getway-app
     restart: always
     volumes:
