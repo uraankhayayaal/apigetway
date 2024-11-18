@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Listeners;
 
 use App\Events\ExampleEvent;
@@ -24,7 +26,7 @@ class ExampleListener
      * @param  \App\Events\ExampleEvent  $event
      * @return void
      */
-    public function handle(ExampleEvent $event)
+    public function handle(ExampleEvent $event): void
     {
         //
     }

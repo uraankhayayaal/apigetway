@@ -23,7 +23,10 @@ services:
       GITHUB_API_TOKEN: ${GITHUB_API_TOKEN}
     networks:
       - 2child-api-getway-net
+      - docker-net
 
 networks:
   2child-api-getway-net:
     driver: 'bridge'
+  docker-net:
+    external: true
