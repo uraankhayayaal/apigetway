@@ -22,7 +22,13 @@ class User extends GenericUser implements AuthenticatableContract, AuthorizableC
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email',
+        'id',
+        'status',
+        'phone',
+        'email',
+        'roles',
+        'createdAt',
+        'updatedAt',
     ];
 
     /**
@@ -52,5 +58,10 @@ class User extends GenericUser implements AuthenticatableContract, AuthorizableC
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function getKeyName()
+    {
+        return 'email';
     }
 }

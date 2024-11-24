@@ -4,39 +4,45 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Clients\User\UserClient;
+use App\Models\User;
 use App\Services\AuthService;
-use Closure;
 use Illuminate\Auth\GenericUser;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\UserProvider;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Validator;
 
 class ApiGetwayUserProvider implements UserProvider
 {
-    protected Cache $cache;
-
     protected AuthService $authService;
 
-    public function __construct(Cache $cache, AuthService $authService)
+    public function __construct()
     {
-        $this->cache = $cache;
-        $this->authService = $authService;
+        $this->init();
+    }
+
+    private function init()
+    {
+        $this->authService = new AuthService(
+            new UserClient(),
+        );
     }
 
     public function retrieveById(mixed $identifier): ?Authenticatable
     {
-        $user = $this->cache->get($identifier->getAuthIdentifier());
+        $user = Redis::get($identifier->getAuthIdentifier());
 
-        return $this->getGenericUser($user);
+        return $this->getUser($user);
     }
 
     /**
-     * @param  string  $token
+     * @param string $token
      */
     public function retrieveByToken(mixed $identifier, $token): ?Authenticatable
     {
-        $user = $this->getGenericUser(
-            $this->cache->get($identifier->getAuthIdentifier())
+        $user = $this->getUser(
+            Redis::get($identifier->getAuthIdentifier())
         );
 
         return $user && $user->getRememberToken() && hash_equals($user->getRememberToken(), $token)
@@ -48,22 +54,30 @@ class ApiGetwayUserProvider implements UserProvider
      */
     public function updateRememberToken(Authenticatable $user, $token): void
     {
-        $cred = $this->cache->get($user->getAuthIdentifier());
+        $cred = Redis::get($user->getAuthIdentifier());
         $cred->setRememberToken($token);
-        $this->cache->put($user->getAuthIdentifier(), $cred);
+        Redis::put($user->getAuthIdentifier(), $cred);
     }
 
+    /**
+     * Здесь нужно просто найти пользователя, от Auth::attempt
+     *
+     * @throws ValidationException
+     * @throws HttpException
+     */
     public function retrieveByCredentials(array $credentials): ?Authenticatable
     {
         if (empty($credentials)) {
-            return;
+            return null;
         }
 
-        $user = $this->authService->getOne($credentials['email'], $credentials['password']); // TODO: is there are safe?
-
-        return $this->getGenericUser($user);
+        return $this->authService->getOne(
+            $credentials['email'],
+            $credentials['password'],
+        );
     }
 
+    /** @deprecated */
     protected function getGenericUser(mixed $user): ?GenericUser
     {
         if (! is_null($user)) {
@@ -71,9 +85,15 @@ class ApiGetwayUserProvider implements UserProvider
         }
     }
 
+    protected function getUser(mixed $user): ?User
+    {
+        if (! is_null($user)) {
+            return new User((array) $user);
+        }
+    }
+
     public function validateCredentials(Authenticatable $user, array $credentials): bool
     {
-        $user = $this->authService->getOne($credentials['email'], $credentials['password']); // TODO: is there are safe?
-        return isset($user->id);
+        return $user->getAuthIdentifier() === $credentials['email'];
     }
 }

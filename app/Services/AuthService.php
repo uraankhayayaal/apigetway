@@ -4,194 +4,89 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Clients\User\UserClient;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\RequestOptions;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 final class AuthService
 {
     public function __construct(
-        private Client $client,
+        private UserClient $userClient,
     ) {}
 
-    public function getOne(string $email, string $password): array
+    public function login(LoginRequest $loginRequest): ?string
     {
-        try {
-            $response = $this->client->request('POST', 'http://mk-web/user/api-auth/get-one', [
-                'headers' => [
-                    'host' => 'localhost',
-                ],
-                RequestOptions::JSON => [
-                    'email' => $email,
-                    'password' => $password,
-                ],
-            ]);
-        } catch (ClientException $e) {
-            if ($e->getCode() === 422) {
-                $errorResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-                $validator = Validator::make(['email' => $email, 'password' => $password], []);
-                foreach ($errorResponse['data'] as $key => $value) {
-                    $validator->errors()->add($key, $value);
-                }
-                throw new ValidationException($validator);
-            }
-            throw $e;
+        if (
+            $token = JWTAuth::attempt([
+                'email' => $loginRequest->email,
+                'password' => $loginRequest->password,
+            ], $loginRequest->rememberMe)
+        ) {
+            return $token;
         }
 
-        if ($response->getReasonPhrase() !== 'OK') {
-            throw new HttpException(404, 'User not found.');
-        }
-
-        return json_decode((string) $response->getBody(), true)['data'];
+        return null;
     }
 
-    public function login(LoginRequest $loginRequest): array
+    /**
+     * @throws ValidationException
+     * @throws HttpException
+     */
+    public function getOne(string $email, string $password): User
     {
-        try {
-            $response = $this->client->request('POST', 'http://mk-web/user/api-auth/get-one', [
-                'headers' => [
-                    'host' => 'localhost',
-                ],
-                RequestOptions::JSON => [
-                    'email' => $loginRequest->email,
-                    'password' => $loginRequest->password,
-                ],
-            ]);
-        } catch (ClientException $e) {
-            if ($e->getCode() === 422) {
-                $errorResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-                $validator = Validator::make((array) $loginRequest, []);
-                foreach ($errorResponse['data'] as $key => $value) {
-                    $validator->errors()->add($key, $value);
-                }
-                throw new ValidationException($validator);
-            }
-            throw $e;
-        }
+        $userType = $this->userClient->getOne($email, $password);
 
-        if ($response->getReasonPhrase() !== 'OK') {
-            throw new HttpException(404, 'User not found.');
-        }
-
-        $user = new User(json_decode((string) $response->getBody(), true)['data']);
-
-        return [
-            'accessToken' => $this->generateAccessToken($user, $loginRequest->rememberMe),
-            'refreshToken' => $this->generateRefreshToken($user),
-            'user' => auth()->user(),
-        ];
+        return new User((array) $userType);
     }
 
+    /**
+     * @throws ValidationException
+     * @throws HttpException
+     */
     public function register(RegisterRequest $registerRequest): User
     {
-        try {
-            $response = $this->client->request('POST', 'http://mk-web/user/api-auth/register', [
-                'headers' => [
-                    'host' => 'localhost',
-                ],
-                RequestOptions::JSON => [
-                    'email' => $registerRequest->email,
-                    'phone' => $registerRequest->phone,
-                    'username' => $registerRequest->username,
-                    'password' => $registerRequest->password,
-                    'isAgreeMarketing' => $registerRequest->isAgreeMarketing,
-                    'isAgreePolicy' => $registerRequest->isAgreePolicy,
-                ],
-            ]);
-        } catch (ClientException $e) {
-            if ($e->getCode() === 422) {
-                $errorResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-                $validator = Validator::make((array) $registerRequest, []);
-                foreach ($errorResponse['data'] as $key => $value) {
-                    $validator->errors()->add($key, $value);
-                }
-                throw new ValidationException($validator);
-            }
-            throw $e;
-        }
+        $userType = $this->userClient->register((array) $registerRequest);
 
-        if ($response->getReasonPhrase() !== 'OK') {
-            throw new HttpException(404, 'User not found.');
-        }
-
-        return new User(json_decode((string) $response->getBody(), true)['data']);
+        return new User((array) $userType);
     }
 
+    /**
+     * @throws HttpException
+     */
     public function confirm(string $hash): User
     {
-        $response = $this->client->request('GET', 'http://mk-web/user/api-auth/confirm?hash=' . $hash);
+        $userType = $this->userClient->confirm([
+            'hash' => $hash,
+        ]);
 
-        if ($response->getReasonPhrase() !== 'OK') {
-            throw new HttpException(404, 'User not found.');
-        }
-
-        $user = new User(json_decode($response->getBody()->getContents(), true));
-
-        return $user;
+        return new User((array) $userType);
     }
 
+    /**
+     * @throws ValidationException
+     * @throws HttpException
+     */
     public function forgotPassword(ForgotPasswordRequest $forgotPasswordRequest): User
     {
-        $response = $this->client->request('POST', 'http://mk-web/user/api-auth/forgot-password', [
-            RequestOptions::JSON => [
-                'email' => $forgotPasswordRequest->email,
-            ],
-        ]);
+        $userType = $this->userClient->forgotPassword((array) $forgotPasswordRequest);
 
-        if ($response->getReasonPhrase() !== 'OK') {
-            throw new HttpException(404, 'User not found.');
-        }
-
-        $user = new User(json_decode($response->getBody()->getContents(), true));
-
-        return $user;
+        return new User((array) $userType);
     }
 
+    /**
+     * @throws ValidationException
+     * @throws HttpException
+     */
     public function resetPassword(ResetPasswordRequest $resetPasswordRequest): User
     {
-        $response = $this->client->request('POST', 'http://mk-web/user/api-auth/reset-password', [
-            RequestOptions::JSON => [
-                'email' => $resetPasswordRequest->passwordResetToken,
-                'email' => $resetPasswordRequest->password,
-            ],
-        ]);
+        $userType = $this->userClient->forgotPassword((array) $resetPasswordRequest);
 
-        if ($response->getReasonPhrase() !== 'OK') {
-            throw new HttpException(404, 'User not found.');
-        }
-
-        $user = new User(json_decode($response->getBody()->getContents(), true));
-
-        return $user;
-    }
-
-    public function refreshToken(RefreshTokenRequest $refreshTokenRequest): array
-    {
-        return [
-            'user' => auth()->user(),
-            'accessToken' => auth()->refresh,
-            'refreshToken' => '',
-        ];
-    }
-
-    private function generateAccessToken(User $user, bool $rememberMe = false): bool|string
-    {
-        return Auth::attempt([$user->id], $rememberMe);
-    }
-
-    private function generateRefreshToken(User $user): string
-    {
-        return '';
+        return new User((array) $userType);
     }
 }

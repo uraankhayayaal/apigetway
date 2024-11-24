@@ -4,7 +4,7 @@
     ```bash
     docker-compose exec app composer require --dev friendsofphp/php-cs-fixer
     ```
-1. Create cs file config:
+1. Create cs file `.php-cs-fixer.php` config:
     ```php
     <?php
 
