@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Responses\TokenResponse;
-use App\Http\Responses\UserResponse;
+use App\Http\Requests\ConfirmQuery;
+use App\Http\Requests\ForgotPasswordForm;
+use App\Http\Requests\LoginForm;
+use App\Http\Requests\RegisterForm;
+use App\Http\Requests\ResetPasswordForm;
+use App\Http\Responses\TokenResource;
+use App\Http\Responses\UserResource;
 use App\Services\AuthService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Routing\Controller;
@@ -28,92 +27,51 @@ class AuthController extends Controller
      * @throws ValidationException
      * @throws HttpException
      */
-    public function login(Request $request): JsonResponse
+    public function get(int $id, string $message): TokenResource
     {
-        $this->validate($request, [
-            'email' => 'required|max:255',
-            'password' => 'required',
-            'rememberMe' => 'boolean',
-        ]);
+        $token = "$id: $message";
 
-        $loginRequest = new LoginRequest(...$request->all());
-
-        $token = $this->service->login($loginRequest); // Тут мы получим успешный ответ от сервиса
-
-        return response()->json( // TODO: и если здесь будет ошибка, то зановно запрос должен отработать корректно
-            new TokenResponse($token)
-        );
+        return new TokenResource($token);
     }
 
     /**
      * @throws ValidationException
      * @throws HttpException
      */
-    public function register(Request $request): JsonResponse
+    public function login(LoginForm $loginForm): TokenResource
     {
-        $this->validate($request, [
-            'username' => 'required|max:255',
-            'email' => 'required|max:255',
-            'phone' => 'required|max:255',
-            'password' => 'required',
-            'isAgreeMarketing' => 'required|boolean',
-            'isAgreePolicy' => 'required|boolean',
-        ]);
+        $token = $this->service->login($loginForm); // Тут мы получим успешный ответ от сервиса
 
-        $registerRequest = new RegisterRequest(...$request->all());
-
-        $user = $this->service->register($registerRequest); // Тут мы получим успешный ответ от сервиса
-
-        return response()->json( // TODO: и если здесь будет ошибка, то зановно запрос должен отработать корректно
-            new UserResponse(
-                id: $user->id,
-                status: $user->status,
-                email: $user->email,
-                phone: $user->phone,
-                createdAt: $user->createdAt,
-                updatedAt: $user->updatedAt,
-                roles: $user->roles,
-            )
-        );
-
-    }
-
-    /**
-     * @throws HttpException
-     */
-    public function confirm(Request $request): JsonResponse
-    {
-        $hash = $request->get('hash');
-        $user = $this->service->confirm($hash);
-
-        return response()->json(
-            new UserResponse(
-                id: $user->id,
-                status: $user->status,
-                email: $user->email,
-                phone: $user->phone,
-                createdAt: $user->createdAt,
-                updatedAt: $user->updatedAt,
-                roles: $user->roles,
-            )
-        );
+        return new TokenResource($token);
     }
 
     /**
      * @throws ValidationException
      * @throws HttpException
      */
-    public function forgotPassword(Request $request): UserResponse
+    public function register(RegisterForm $registerForm): UserResource
     {
-        $this->validate($request, [
-            'email' => 'required|max:255',
-        ]);
+        $user = $this->service->register($registerForm); // Тут мы получим успешный ответ от сервиса
 
-        $forgotPasswordRequest = new ForgotPasswordRequest(...$request->all());
+        return new UserResource(
+            id: $user->id,
+            status: $user->status,
+            email: $user->email,
+            phone: $user->phone,
+            createdAt: $user->createdAt,
+            updatedAt: $user->updatedAt,
+            roles: $user->roles,
+        );
+    }
 
-        $user = $this->service->forgotPassword($forgotPasswordRequest);
+    /**
+     * @throws HttpException
+     */
+    public function confirm(ConfirmQuery $query): UserResource
+    {
+        $user = $this->service->confirm($query->hash);
 
-        return new UserResponse(
+        return new UserResource(
             id: $user->id,
             status: $user->status,
             email: $user->email,
@@ -128,18 +86,11 @@ class AuthController extends Controller
      * @throws ValidationException
      * @throws HttpException
      */
-    public function resetPassword(Request $request): UserResponse
+    public function forgotPassword(ForgotPasswordForm $forgotPasswordForm): UserResource
     {
-        $this->validate($request, [
-            'passwordResetToken' => 'required|max:255',
-            'password' => 'required',
-        ]);
+        $user = $this->service->forgotPassword($forgotPasswordForm);
 
-        $resetPasswordRequest = new ResetPasswordRequest(...$request->all());
-
-        $user = $this->service->resetPassword($resetPasswordRequest);
-
-        return new UserResponse(
+        return new UserResource(
             id: $user->id,
             status: $user->status,
             email: $user->email,
@@ -150,9 +101,28 @@ class AuthController extends Controller
         );
     }
 
-    public function validateToken(): UserResponse
+    /**
+     * @throws ValidationException
+     * @throws HttpException
+     */
+    public function resetPassword(ResetPasswordForm $resetPasswordForm): UserResource
     {
-        return new UserResponse(
+        $user = $this->service->resetPassword($resetPasswordForm);
+
+        return new UserResource(
+            id: $user->id,
+            status: $user->status,
+            email: $user->email,
+            phone: $user->phone,
+            createdAt: $user->createdAt,
+            updatedAt: $user->updatedAt,
+            roles: $user->roles,
+        );
+    }
+
+    public function validateToken(): UserResource
+    {
+        return new UserResource(
             id: Auth::getUser()->id,
             status: Auth::getUser()->status,
             email: Auth::getUser()->email,

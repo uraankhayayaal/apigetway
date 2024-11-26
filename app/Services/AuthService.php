@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Clients\User\UserClient;
-use App\Http\Requests\ForgotPasswordRequest;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ForgotPasswordForm;
+use App\Http\Requests\LoginForm;
+use App\Http\Requests\RegisterForm;
+use App\Http\Requests\ResetPasswordForm;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -20,13 +20,13 @@ final class AuthService
         private UserClient $userClient,
     ) {}
 
-    public function login(LoginRequest $loginRequest): ?string
+    public function login(LoginForm $loginForm): ?string
     {
         if (
             $token = JWTAuth::attempt([
-                'email' => $loginRequest->email,
-                'password' => $loginRequest->password,
-            ], $loginRequest->rememberMe)
+                'email' => $loginForm->email,
+                'password' => $loginForm->password,
+            ], $loginForm->rememberMe)
         ) {
             return $token;
         }
@@ -49,9 +49,9 @@ final class AuthService
      * @throws ValidationException
      * @throws HttpException
      */
-    public function register(RegisterRequest $registerRequest): User
+    public function register(RegisterForm $registerForm): User
     {
-        $userType = $this->userClient->register((array) $registerRequest);
+        $userType = $this->userClient->register((array) $registerForm);
 
         return new User((array) $userType);
     }
@@ -72,9 +72,9 @@ final class AuthService
      * @throws ValidationException
      * @throws HttpException
      */
-    public function forgotPassword(ForgotPasswordRequest $forgotPasswordRequest): User
+    public function forgotPassword(ForgotPasswordForm $forgotPasswordFrom): User
     {
-        $userType = $this->userClient->forgotPassword((array) $forgotPasswordRequest);
+        $userType = $this->userClient->forgotPassword((array) $forgotPasswordFrom);
 
         return new User((array) $userType);
     }
@@ -83,9 +83,9 @@ final class AuthService
      * @throws ValidationException
      * @throws HttpException
      */
-    public function resetPassword(ResetPasswordRequest $resetPasswordRequest): User
+    public function resetPassword(ResetPasswordForm $resetPasswordForm): User
     {
-        $userType = $this->userClient->forgotPassword((array) $resetPasswordRequest);
+        $userType = $this->userClient->forgotPassword((array) $resetPasswordForm);
 
         return new User((array) $userType);
     }
