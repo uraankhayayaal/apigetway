@@ -36,3 +36,7 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function () use ($ro
         $router->get('/validate-token', 'AuthController@validateToken');
     });
 });
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+    $router->get('/{srviceName}/{servicePath:.*}', 'ServiceController@get');
+});

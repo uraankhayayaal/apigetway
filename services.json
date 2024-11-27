@@ -1,0 +1,7 @@
+[
+    {
+        "name": "users",
+        "host": "http://mk-web",
+        "openapi": "http://mk-web/swagger.yaml"
+    }
+]

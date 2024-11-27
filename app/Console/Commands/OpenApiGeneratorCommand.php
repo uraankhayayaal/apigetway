@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use OpenApi\Analysis;
 use OpenApi\Attributes as OA;
 use OpenApi\Context;
+use OpenApi\Serializer;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -62,6 +63,7 @@ class OpenApiGeneratorCommand extends Command
         $componentSchemas = [];
 
         $analysis->openapi->paths = [];
+        $analysis->openapi->tags = [];
         foreach (Route::getRoutes() as $route) {
             if ($this->isClosure($route['action'])) { // skip callbacks from routs
                 continue;
@@ -97,6 +99,29 @@ class OpenApiGeneratorCommand extends Command
                 ),
             ],
         );
+
+        $services = json_decode(
+            file_get_contents('./services.json'),
+        );
+
+        foreach ($services as $service) {
+            $abstractAnnotation = (new Serializer())->deserializeFile($service->openapi, 'json', \OpenApi\Annotations\OpenApi::class);
+            $serviceAnalysis = new Analysis([$abstractAnnotation], new Context());
+            // $serviceAnalysis->openapi->saveAs("./{$service->name}.json", 'json');
+
+            foreach ($serviceAnalysis->openapi->paths as $servicePath) {
+                foreach ($servicePath->operations() as $operation) {
+                    $operation->tags = [$service->name];
+                }
+                $servicePath->path = "/api/{$service->name}{$servicePath->path}";
+                $analysis->openapi->paths[] = $servicePath;
+            }
+            $analysis->openapi->tags[] = new OA\Tag(name: $service->name);
+
+            foreach ($serviceAnalysis->openapi->components->schemas as $serviceComponentsSchema) {
+                $analysis->openapi->components->schemas[] = $serviceComponentsSchema;
+            }
+        }
 
         $analysis->openapi->saveAs('./openapi.json', 'json');
     }
