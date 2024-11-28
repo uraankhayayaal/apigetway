@@ -21,6 +21,7 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->get('/', 'ApiController@get');
+    $router->get('/openapi', 'ApiController@openapi');
     $router->group(['prefix' => 'auth', 'as' => 'auth'], function () use ($router) {
         $router->post('/login', 'AuthController@login');
         $router->post('/register', 'AuthController@register');

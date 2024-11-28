@@ -15,25 +15,6 @@
         }
     ],
     "paths": {
-        "/api": {
-            "get": {
-                "tags": [
-                    ""
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успешный ответ"
-                    },
-                    "401": {
-                        "description": "Не авторизован"
-                    },
-                    "403": {
-                        "description": "Нет доступа"
-                    }
-                },
-                "security": []
-            }
-        },
         "/api/auth/login": {
             "post": {
                 "tags": [

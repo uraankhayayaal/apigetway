@@ -65,7 +65,7 @@ class OpenApiGeneratorCommand extends Command
         $analysis->openapi->paths = [];
         $analysis->openapi->tags = [];
         foreach (Route::getRoutes() as $route) {
-            if ($this->isClosure($route['action'])) { // skip callbacks from routs
+            if ($this->isClosure($route['action']) || !isset($route['action']['as'])) { // skip callbacks from routs
                 continue;
             }
 
@@ -74,7 +74,7 @@ class OpenApiGeneratorCommand extends Command
 
             $path = new $httpMethodClass(
                 security: $this->getSecurity($route['action']),
-                tags: [$route['action']['as'] ?? ''],
+                tags: [$route['action']['as']],
                 parameters: $this->buildParameters($route['action']),
                 requestBody: $this->buildRequestBody($route['action']),
                 responses: $this->buildResponses($route['action'], $componentSchemas),
