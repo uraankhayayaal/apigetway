@@ -9,8 +9,8 @@ use ReflectionProperty;
 
 abstract class BaseRequestFormData extends BaseRequestData
 {
-    protected function getPropValue(Request $request, ReflectionProperty $prop): string
+    protected function getPropValue(Request $request, ReflectionProperty $prop): mixed
     {
-        return $request->input($prop->getName());
+        return $request->input($prop->getName()); // return types: string, bool, int, float, etc
     }
 }

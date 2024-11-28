@@ -36,7 +36,7 @@ abstract class BaseRequestData
         unset($inputPropValue);
     }
 
-    abstract protected function getPropValue(Request $request, ReflectionProperty $prop): string;
+    abstract protected function getPropValue(Request $request, ReflectionProperty $prop): mixed;
 
     abstract public function rules(): array;
 

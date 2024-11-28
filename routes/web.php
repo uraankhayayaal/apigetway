@@ -39,5 +39,10 @@ $router->group(['prefix' => 'api', 'middleware' => 'auth'], function () use ($ro
 });
 
 $router->group(['prefix' => 'api'], function () use ($router) {
-    $router->get('/{srviceName}/{servicePath:.*}', 'ServiceController@get');
+    $router->get('/{serviceName}/{servicePath:.*}', 'ServiceController@get');
+    $router->post('/{serviceName}/{servicePath:.*}', 'ServiceController@post');
+    $router->put('/{serviceName}/{servicePath:.*}', 'ServiceController@put');
+    $router->patch('/{serviceName}/{servicePath:.*}', 'ServiceController@patch');
+    $router->options('/{serviceName}/{servicePath:.*}', 'ServiceController@options');
+    $router->head('/{serviceName}/{servicePath:.*}', 'ServiceController@head');
 });

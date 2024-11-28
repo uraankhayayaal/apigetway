@@ -19,6 +19,10 @@ use ReflectionMethod;
 
 class OpenApiGeneratorCommand extends Command
 {
+    private const API_LOCAL_HOST = 'http://localhost:8000';
+
+    private const API_PROD_HOST = 'https://2children.ru';
+
     private const AUTH_MIDDLEWARE = 'auth';
 
     private const BASE_FORM_DATA_CLASS = BaseRequestFormData::class;
@@ -51,11 +55,11 @@ class OpenApiGeneratorCommand extends Command
         $analysis->openapi->info = new OA\Info(title: 'MY API GETWAY', version: '0.0.1');
         $analysis->openapi->servers = [
             new OA\Server(
-                url: 'http://localhost:3010',
+                url: self::API_LOCAL_HOST,
                 description: 'Local API server'
             ),
             new OA\Server(
-                url: 'https://2children.ru',
+                url: self::API_PROD_HOST,
                 description: 'Production API server'
             ),
         ];
