@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "MY API GETWAY",
+        "title": "API GETWAY",
         "version": "0.0.1"
     },
     "servers": [
@@ -398,7 +398,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/article/api/index": {
@@ -525,7 +526,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/article/api/last-three": {
@@ -539,7 +541,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/article/api/view": {
@@ -565,7 +568,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/bookmark/api/create": {
@@ -582,7 +586,8 @@
                             "schema": {
                                 "required": [
                                     "modelClass",
-                                    "modelId"
+                                    "modelId",
+                                    "userId"
                                 ],
                                 "properties": {
                                     "modelClass": {
@@ -591,8 +596,13 @@
                                         "example": "news"
                                     },
                                     "modelId": {
-                                        "type": "number",
-                                        "format": "text",
+                                        "type": "integet",
+                                        "format": "int64",
+                                        "example": 1
+                                    },
+                                    "userId": {
+                                        "type": "integet",
+                                        "format": "int64",
                                         "example": 1
                                     }
                                 },
@@ -627,7 +637,8 @@
                             "schema": {
                                 "required": [
                                     "modelClass",
-                                    "modelId"
+                                    "modelId",
+                                    "userId"
                                 ],
                                 "properties": {
                                     "modelClass": {
@@ -638,6 +649,11 @@
                                     "modelId": {
                                         "type": "number",
                                         "format": "text",
+                                        "example": 1
+                                    },
+                                    "userId": {
+                                        "type": "integet",
+                                        "format": "int64",
                                         "example": 1
                                     }
                                 },
@@ -701,7 +717,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/news/api/populars": {
@@ -715,7 +732,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/news/api/latests": {
@@ -729,7 +747,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/news/api/view": {
@@ -755,7 +774,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/location/api/cities": {
@@ -769,7 +789,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/search/api/index": {
@@ -815,7 +836,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/section/api-section-category/index": {
@@ -861,7 +883,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/section/api-section/index": {
@@ -1099,7 +1122,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/section/api-section/last-three": {
@@ -1113,7 +1137,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/section/api-section/view": {
@@ -1139,7 +1164,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/section/api-section-filter/index": {
@@ -1153,7 +1179,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/login": {
@@ -1195,7 +1222,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/get-one": {
@@ -1235,7 +1263,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/register": {
@@ -1297,7 +1326,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/confirm": {
@@ -1321,7 +1351,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/forgot-password": {
@@ -1355,7 +1386,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/reset-password": {
@@ -1395,7 +1427,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/user/api-auth/validate-token": {
@@ -1413,11 +1446,7 @@
                         "description": "Не разрешено"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/user/api-auth/refresh-token": {
@@ -1451,7 +1480,8 @@
                     "200": {
                         "description": "Успешный ответ"
                     }
-                }
+                },
+                "security": []
             }
         },
         "/api/users/schedule/api-event/create": {
@@ -1510,11 +1540,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-event/update": {
@@ -1585,11 +1611,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-event/index": {
@@ -1604,11 +1626,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-event/view": {
@@ -1635,11 +1653,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-event/delete": {
@@ -1666,11 +1680,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-plan/create": {
@@ -1710,11 +1720,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-plan/update": {
@@ -1761,11 +1767,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-plan/index": {
@@ -1780,11 +1782,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-plan/view": {
@@ -1811,11 +1809,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         },
         "/api/users/schedule/api-plan/delete": {
@@ -1842,11 +1836,7 @@
                         "description": "Успешный ответ"
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                "security": []
             }
         }
     },
