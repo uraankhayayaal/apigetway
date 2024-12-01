@@ -10,6 +10,7 @@ services:
       - ./public/index.php:/app/public/index.php
     networks:
       - 2child-api-getway-net
+      - docker-net
 
   app:
     build:
