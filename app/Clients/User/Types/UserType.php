@@ -13,7 +13,7 @@ class UserType
         public int $createdAt,
         public int $updatedAt,
         public string $email,
-        public string $phone,
+        public ?string $phone,
         public array $roles,
     ) {}
 }
