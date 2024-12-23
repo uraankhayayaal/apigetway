@@ -62,7 +62,7 @@ $app->singleton(
 */
 
 $app->configure('app');
-$app->configure('jwt'); // TODO: Check there, its maybe no effect
+$app->configure('jwt');
 
 /*
 |--------------------------------------------------------------------------
