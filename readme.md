@@ -17,7 +17,10 @@ All services stored at [services.json](services.json) file. To add new service f
     }
 ]
 ```
-and update openapi docs for API Getway `docker-compose exec app php artisan openapi:generate`.
+and update openapi docs for API Getway:
+```bash
+docker-compose exec app php artisan openapi:generate
+```
 
 ## Commands
 To update openapi docs use:
@@ -25,3 +28,20 @@ To update openapi docs use:
 docker-compose exec app php artisan openapi:generate
 ```
 The command updates docs from all services from [services.json](services.json) file, store it at [openapi.json](openapi.json), and can be viewed by swagger ui at [http://localhost:8000/api](http://localhost:8000/api)
+
+## Develop packages
+Change `"repositories-dev"` to `"repositories"` in [composer.json](composer.json) file. And require a dev package:
+```bash
+docker-compose exec app composer require --dev uraankhayayaal/openapi-generator-lumen
+```
+
+## Testing
+```bash
+docker-compose exec app vendor/bin/phpunit
+```
+
+### For test packages
+uncomment in [phpunit.xml](phpunit.xml) file:
+```xml
+<directory suffix="Test.php">./packages/*/tests</directory>
+```
