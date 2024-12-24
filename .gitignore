@@ -8,3 +8,4 @@ Homestead.yaml
 .php-cs-fixer.php
 /builds
 /cache
+.DS_Store
