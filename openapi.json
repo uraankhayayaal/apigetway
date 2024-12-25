@@ -1838,6 +1838,227 @@
                 },
                 "security": []
             }
+        },
+        "/api/storage/api/check": {
+            "get": {
+                "tags": [
+                    "storage"
+                ],
+                "parameters": [
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "nullable": false
+                        },
+                        "example": null
+                    }
+                ],
+                "responses": {
+                    "x-FileResponse": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/FileResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/storage/api/upload": {
+            "post": {
+                "tags": [
+                    "storage"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "x-UploadFileSuccessResponse": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UploadFileSuccessResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "x-UploadFileErrorResponse": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UploadFileErrorResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/storage/api/miltipleupload": {
+            "post": {
+                "tags": [
+                    "storage"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "files[]"
+                                ],
+                                "properties": {
+                                    "files[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        },
+                                        "nullable": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "x-UploadFilesSuccessResponse": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/UploadFilesSuccessResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/storage/api/remove": {
+            "delete": {
+                "tags": [
+                    "storage"
+                ],
+                "parameters": [
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "nullable": false
+                        },
+                        "example": null
+                    }
+                ],
+                "responses": {
+                    "x-RemoveFileSuccessResponse": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RemoveFileSuccessResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "x-RemoveFileErrorResponse": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/RemoveFileErrorResponse"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": []
+            }
         }
     },
     "components": {
@@ -1947,6 +2168,109 @@
                     }
                 },
                 "type": "object"
+            },
+            "FileResponse": {
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "nullable": false
+                    },
+                    "isExist": {
+                        "type": "boolean",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "UploadFileSuccessResponse": {
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": false
+                    },
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "UploadFileErrorResponse": {
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": false
+                    },
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "UploadFilesSuccessResponse": {
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": false
+                    },
+                    "urls": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string",
+                                    "nullable": true
+                                }
+                            ]
+                        },
+                        "nullable": false
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "RemoveFileSuccessResponse": {
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": false
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
+            },
+            "RemoveFileErrorResponse": {
+                "properties": {
+                    "removedAt": {
+                        "type": "integer",
+                        "format": "int64",
+                        "nullable": false
+                    },
+                    "status": {
+                        "type": "string",
+                        "nullable": false
+                    }
+                },
+                "type": "object"
             }
         },
         "securitySchemes": {
@@ -1960,6 +2284,9 @@
     "tags": [
         {
             "name": "users"
+        },
+        {
+            "name": "storage"
         }
     ]
 }

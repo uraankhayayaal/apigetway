@@ -3,5 +3,10 @@
         "name": "users",
         "host": "http://mk-web",
         "openapi": "http://mk-web/swagger.yaml"
+    },
+    {
+        "name": "storage",
+        "host": "http://ss-web",
+        "openapi": "http://ss-web/swagger.yaml"
     }
 ]

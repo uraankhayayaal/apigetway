@@ -50,7 +50,11 @@ class ServiceController extends Controller
 
     public function post(Request $request, string $serviceName, string $servicePath): JsonResponse
     {
-        $response = $this->handleRequestWithBody(WithBodyRequestMethodEnum::POST, $request, $serviceName, $servicePath);
+        if ($request->files) {
+            $response = $this->handleRequestWithFiles(WithBodyRequestMethodEnum::POST, $request, $serviceName, $servicePath);
+        } else {
+            $response = $this->handleRequestWithBody(WithBodyRequestMethodEnum::POST, $request, $serviceName, $servicePath);
+        }
 
         return response()->json(
             $response->json(),
@@ -112,6 +116,41 @@ class ServiceController extends Controller
             });
     }
 
+    private function handleRequestWithFiles(WithBodyRequestMethodEnum $method, Request $request, string $serviceName, string $servicePath): ClientResponse
+    {
+        $servicePathWithQuery = $servicePath . $this->getQuery($request);
+
+        $http = Http::asMultipart();
+
+        foreach ($request->files as $key => $multipleFile) {
+            if (is_array($multipleFile)) {
+                foreach ($multipleFile as $file) {
+                    $http->attach(
+                        $key . '[]',
+                        $file,
+                        $file->getClientOriginalName(),
+                        ['Content-Type' => $file->getMimeType()],
+                    );
+                }
+            } else {
+                $http->attach(
+                    $key,
+                    $multipleFile,
+                    $multipleFile->getClientOriginalName(),
+                    ['Content-Type' => $multipleFile->getMimeType()],
+                );
+            }
+        }
+
+        return $http->{$method->value}(
+            "{$this->getServiceHost($serviceName)}/$servicePathWithQuery",
+            $request->input(),
+        )
+        ->onError(function (ClientResponse $response) use ($serviceName, $servicePathWithQuery): void {
+            $this->catchError($response, $serviceName, $servicePathWithQuery);
+        });
+    }
+
     private function handleRequestWithBody(WithBodyRequestMethodEnum $method, Request $request, string $serviceName, string $servicePath): ClientResponse
     {
         $servicePathWithQuery = $servicePath . $this->getQuery($request);
@@ -129,7 +168,7 @@ class ServiceController extends Controller
     private function getClientWithHeaders(): \Illuminate\Http\Client\PendingRequest
     {
         return Http::withHeaders([
-            'host' => 'localhost',
+            'host' => 'localhost', // TODO: Change it at prod
             'Content-Type' => 'application/json',
         ]);
     }
