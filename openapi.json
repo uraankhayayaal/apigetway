@@ -1923,21 +1923,6 @@
                             }
                         }
                     },
-                    "x-UploadFileErrorResponse": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/UploadFileErrorResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
                     "401": {
                         "description": "Not authorized"
                     },
@@ -2020,35 +2005,8 @@
                     }
                 ],
                 "responses": {
-                    "x-RemoveFileSuccessResponse": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/RemoveFileSuccessResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "x-RemoveFileErrorResponse": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/RemoveFileErrorResponse"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                    "x-JsonResponse": {
+                        "description": "Success"
                     },
                     "401": {
                         "description": "Not authorized"
@@ -2171,10 +2129,6 @@
             },
             "FileResponse": {
                 "properties": {
-                    "url": {
-                        "type": "string",
-                        "nullable": false
-                    },
                     "isExist": {
                         "type": "boolean",
                         "nullable": false
@@ -2184,34 +2138,7 @@
             },
             "UploadFileSuccessResponse": {
                 "properties": {
-                    "createdAt": {
-                        "type": "integer",
-                        "format": "int64",
-                        "nullable": false
-                    },
                     "url": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "status": {
-                        "type": "string",
-                        "nullable": false
-                    }
-                },
-                "type": "object"
-            },
-            "UploadFileErrorResponse": {
-                "properties": {
-                    "createdAt": {
-                        "type": "integer",
-                        "format": "int64",
-                        "nullable": false
-                    },
-                    "url": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "status": {
                         "type": "string",
                         "nullable": false
                     }
@@ -2220,11 +2147,6 @@
             },
             "UploadFilesSuccessResponse": {
                 "properties": {
-                    "createdAt": {
-                        "type": "integer",
-                        "format": "int64",
-                        "nullable": false
-                    },
                     "urls": {
                         "type": "array",
                         "items": {
@@ -2236,40 +2158,12 @@
                             ]
                         },
                         "nullable": false
-                    },
-                    "status": {
-                        "type": "string",
-                        "nullable": false
                     }
                 },
                 "type": "object"
             },
-            "RemoveFileSuccessResponse": {
-                "properties": {
-                    "createdAt": {
-                        "type": "integer",
-                        "format": "int64",
-                        "nullable": false
-                    },
-                    "status": {
-                        "type": "string",
-                        "nullable": false
-                    }
-                },
-                "type": "object"
-            },
-            "RemoveFileErrorResponse": {
-                "properties": {
-                    "removedAt": {
-                        "type": "integer",
-                        "format": "int64",
-                        "nullable": false
-                    },
-                    "status": {
-                        "type": "string",
-                        "nullable": false
-                    }
-                },
+            "JsonResponse": {
+                "properties": {},
                 "type": "object"
             }
         },
